@@ -93,7 +93,38 @@ def parse_detail_page(page, url):
     else:
         process_text = ""
 
-    # 15. 아이템 딕셔너리로 정리하기
+    # 15. 경력, 학력, 마감일, 근무지역 추출하기
+    work_experience_dt = page.locator("dt:has-text('경력')")
+    work_experience_dl = work_experience_dt.locator("xpath=ancestor::dl[1]")
+    work_experience = safe_inner_text(work_experience_dl.locator("dd")) 
+
+    education_dt = page.locator("dt:has-text('학력')")
+    education_dl = education_dt.locator("xpath=ancestor::dl[1]")
+    education = safe_inner_text(education_dl.locator("dd"))
+
+    deadline_dt = page.locator("dt:has-text('마감일')")
+    deadline_dl = deadline_dt.locator("xpath=ancestor::dl[1]")
+    deadline = safe_inner_text(deadline_dl.locator("dd"))
+
+    location_dt = page.locator("dt:has-text('근무지역')")
+    if location_dt.count() > 0:
+        location_dl = location_dt.locator("xpath=ancestor::dl[1]")
+        location_li = location_dl.locator("dd ul li")
+
+        if location_li.count() > 0:
+            location = location_dl.locator("dd ul li").evaluate("""
+            (li) => {
+                const btns = li.querySelector('.btns');
+                if (btns) btns.remove();
+                return li.textContent.trim();
+            }
+            """)
+        else:
+            location = safe_inner_text(location_dl.locator("dd"))
+    else:
+        location = ""
+    
+    # 16. 아이템 딕셔너리로 정리하기
     item = {
         "url": BASE_URL + url,
         "title": title,
@@ -104,6 +135,10 @@ def parse_detail_page(page, url):
         "prefer": prefer_text,
         "benefit": benefit_text,
         "process": process_text,
+        "work_experience": work_experience,
+        "education": education,
+        "deadline": deadline,
+        "location": location,
     }
 
     return item
@@ -152,6 +187,10 @@ def save_items_to_csv(items, output_path="data/jumpit_jobs.csv"):
         'prefer',
         'benefit',
         'process',
+        'work_experience',
+        'education',
+        'deadline',
+        'location',
     ]
 
     with open(output_path, mode='w', newline='', encoding='utf-8-sig') as f:
