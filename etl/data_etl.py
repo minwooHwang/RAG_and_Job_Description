@@ -80,7 +80,7 @@ def remove_duplicates(df, subset_col='url'):
     return df_out
 
 # 기술스택을 소문자로 바꾸고 리스트 형태로 바꿔주는 함수
-def refined_tech_stack(df, source_col="tech_stack", target_col="tech_stack_list"):
+def refined_tech_stack(df, source_col="tech_stack", target_col="tech_stack"):
     '''
     tech_stack 문자열을
     → 소문자
@@ -140,25 +140,26 @@ def location_state(df, source_col="location", target_col="location_state"):
     return df
 
 # 마감기한을 datatime 형식으로 바꿔주는 함수
+'''
 def deadline_transform_to_datetime(df, source_col='deadline', target_col='deadline_dt'):
-    '''
-    마감기한 문자열을 datetime 형식으로 바꿔주는 함수
-    '''
+    # 마감기한 문자열을 datetime 형식으로 바꿔주는 함수
+
     df[target_col] = pd.to_datetime(
         df[source_col],
         errors="coerce"
     )
-    '''
-    pd.to_datetime(바꿀대상, errors="coerce")
-    •	바꿀대상
-    → 문자열, Series, 리스트 전부 가능
-	•	errors="coerce"
-    → 날짜로 못 바꾸면 NaT로 처리
-    '''
+    
+    # pd.to_datetime(바꿀대상, errors="coerce")
+    # •	바꿀대상
+    # → 문자열, Series, 리스트 전부 가능
+	# •	errors="coerce"
+    # → 날짜로 못 바꾸면 NaT로 처리
+
     return df
+'''
 
 # 리스트를 json 문자열로 바꿔서 저장해주는 함수 / csv파일은 리스트를 저장하면 그냥 문자열로 저장하기 때문에 json 문자열로 바꿔서 저장해야함.
-def save_csv_with_json_lists(df, list_cols=("tech_stack_list",)):
+def save_csv_with_json_lists(df, list_cols=("tech_stack",)):
     df_out = df.copy() # 원형 보존을 위함
 
     for col in list_cols:
@@ -172,10 +173,10 @@ def save_csv_with_json_lists(df, list_cols=("tech_stack_list",)):
 def main():
     clean_df = normalize_missing_values(df, TEXT_COLUMNS)
     clean_df = remove_duplicates(clean_df, subset_col='url')
-    clean_df = refined_tech_stack(clean_df, source_col="tech_stack", target_col="tech_stack_list")
+    clean_df = refined_tech_stack(clean_df, source_col="tech_stack", target_col="tech_stack")
     clean_df = location_state(clean_df, source_col="location", target_col="location_state")
-    clean_df = deadline_transform_to_datetime(clean_df, source_col='deadline', target_col='deadline_dt')
-    clean_df = save_csv_with_json_lists(clean_df, list_cols=("tech_stack_list",))
+    # clean_df = deadline_transform_to_datetime(clean_df, source_col='deadline', target_col='deadline_dt')
+    clean_df = save_csv_with_json_lists(clean_df, list_cols=("tech_stack",))
     clean_df.to_csv(OUTPUT_PATH, index=False, encoding="utf-8-sig")
 
 if __name__ == "__main__":
