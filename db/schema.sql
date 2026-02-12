@@ -9,7 +9,7 @@ CREATE TABLE jumpit_jobs(
     url TEXT,
     title TEXT,
     company_name TEXT,
-    tech_stack TEXT,
+    tech_stack JSONB,
     work TEXT,
     qualification TEXT,
     prefer TEXT,
@@ -17,9 +17,7 @@ CREATE TABLE jumpit_jobs(
     process TEXT,
     work_experience TEXT,
     education TEXT,
-    deadline TEXT,
+    deadline DATE,
     location TEXT,
-    tech_stack_list TEXT,
-    location_state TEXT,
-    deadline_dt DATE,
+    location_state TEXT
 )
