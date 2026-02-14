@@ -21,3 +21,9 @@ CREATE TABLE jumpit_jobs(
     location TEXT,
     location_state TEXT
 )
+
+/*
+SELECT "출력할 컬럼들"
+FROM "테이블"
+WHERE "조건"
+*/
