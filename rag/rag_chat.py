@@ -1,1 +1,24 @@
 # RAG 답변 생성
+from llm.llm import chat_completion, question_embed
+from rag.retriever import retrieve_top_k
+
+# RAG에서 문서를 검색하는 함수
+def build_context(docs) -> str:
+    parts = []
+    for i, d in enumerate(docs, start=1):
+        parts.append(f"[문서 {i}] (distance={d['distance']})\n{d['embedding_text']}")
+        # 이를 통해 몇번 문서의 유사도가 얼마하고 임베딩 텍스는 뭔지 알 수 있다.
+
+    return "\n\n".join(parts) # 줄바꿈을 2번 하는 이유는 단순한 줄바꿈이 아닌 문단을 나누기 위함이다.
+
+def answer_with_rag(user_question: str, k: int = 5) -> str:
+    q_emb = question_embed(user_question) # 사용자의 질문을 받는 임베딩 함수 불러주고
+    docs = retrieve_top_k(q_emb, k=k) # 문서에 대해서 top_k를 뽑아주는 함수 불러주고
+    context = build_context(docs)
+
+    messages = [
+        {"role": "system", "content": "너는 채용공고를 추천해주는 전문가야. 답변은 제공된 문서를 근거로만 답해"},
+        {"role": "user", "content": f"질문: {user_question}\n\n 참고 문서: \n{context}"}
+    ]
+
+    return chat_completion(messages)
