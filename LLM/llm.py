@@ -6,6 +6,8 @@ azure 서버에서 openai 모델을 불러올꺼다.
 그걸 불러오고 if문을 통해서 테스트 코드를 집어넣자 불러와지는지 봐야하니까
 
 그리고 나서 azure 서버에서 openai 모델을 불러보자
+---------
+llm.py는 rag_chat.py가 LLM을 사용할 수 있게 해주는 툴을 담은 파일이다.
 '''
 ###############################
 import os
@@ -24,29 +26,31 @@ def get_azure_client() -> OpenAI: # 반환타입힌트를 통해서 OpenAI가 �
 
     return OpenAI(base_url=endpoint, api_key=api_key)
 
-# LLM에게 대화를 거는 함수
-def chat_bot(user_text: str) -> str:
+# 대화에 사용할 LLM 모델을 고르는 함수
+def chat_completion(messages, model: str | None = None) -> str:
     client = get_azure_client()
-    deployment = os.getenv("AZURE_OPENAI_DEPLOYMENT")
-
+    deployment = model or os.getenv("AZURE_OPENAI_DEPLOYMENT")
     if not deployment:
-        raise ValueError(".env에 AZURE_OPENAI_DEPLOYMENT가 제대로 입력되지 않았습니다.")
+        raise ValueError(".env에 사용할 LLM 모델을 누락하였습니다.")
     
     resp = client.chat.completions.create(
         model = deployment,
-        messages=[
-            {"role": "user", "content": user_text}
-        ],
+        messages = messages
     )
-
+    
     return resp.choices[0].message.content
 
+# 질문 임베딩에 사용할 모델을 고르는 함수
+def question_embed(text: str, model: str | None = None ) -> list[float]:
+    # | Noen = None의 의미는 model의 타입이 str일 수도 있고 None일 수도 있다는 것을 의미함.
+    client = get_azure_client()
+    deployment = model or os.getenv("AZURE_OPENAI_DEPLOYMENT_EMBEDDING")
+    if not deployment:
+        raise ValueError(".env에 사용할 질문 임베딩 모델을 누락하였습니다.")
+    
+    resp = client.embeddings.create(
+        model = deployment,
+        input = text
+    )
 
-def main():
-    user_input = input("질문을 입력해주세요: ")
-    ansewer = chat_bot(user_input)
-    print("\n====== 답변입니다! ======")
-    print(ansewer)
-
-if __name__ == "__main__":
-    main()
+    return resp.data[0].embedding
