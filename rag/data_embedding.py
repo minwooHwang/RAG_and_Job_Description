@@ -85,12 +85,15 @@ def main():
     if not deployment: raise ValueError(".env에 임베딩 모델이 입력되지 않았습니다.")
 
     try:
-        for row in rows:
+        for idx, row in enumerate(rows, start=1):
             job_id = row['id']
             text = build_embedding_text(row)
             embedding = embedding_model(text, client, deployment)
             save_embedding(job_id, embedding, text, deployment, conn)
+            if idx % 20 == 0:
+                print(f"{idx} / {len(rows)} 처리 완료")
         conn.commit()
+        print()
         print("임베딩 데이터 DB 적재 성공")
     except Exception as e:
         conn.rollback()
