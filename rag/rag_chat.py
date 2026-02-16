@@ -11,7 +11,7 @@ def build_context(docs) -> str:
 
     return "\n\n".join(parts) # 줄바꿈을 2번 하는 이유는 단순한 줄바꿈이 아닌 문단을 나누기 위함이다.
 
-def answer_with_rag(user_question: str, k: int = 5) -> str:
+def answer_with_rag(user_question: str, k: int = 5) -> tuple[str, str]:
     q_emb = question_embed(user_question) # 사용자의 질문을 받는 임베딩 함수 불러주고
     docs = retrieve_top_k(q_emb, k=k) # 문서에 대해서 top_k를 뽑아주는 함수 불러주고
     context = build_context(docs)
@@ -20,5 +20,28 @@ def answer_with_rag(user_question: str, k: int = 5) -> str:
         {"role": "system", "content": "너는 채용공고를 추천해주는 전문가야. 답변은 제공된 문서를 근거로만 답해"},
         {"role": "user", "content": f"질문: {user_question}\n\n 참고 문서: \n{context}"}
     ]
+    answer = chat_completion(messages)
 
-    return chat_completion(messages)
+    return answer, context
+
+def main():
+    print("RAG 기능을 통한 LLM 답변 서비스 시작 / exit를 입력하면 종료됩니다.")
+
+    while True:
+        user_question = input("\n 사용자 질문을 입력하세요: ")
+
+        if user_question.lower() == "exit":
+            print("RAG 기능을 통한 LLM 답변 서비스를 종료합니다.")
+            break
+
+        answer, context = answer_with_rag(user_question)
+        print("\n============ 답변을 제공합니다 ============")
+        print(answer)
+        '''
+        print("\n===== 참고 문서 (RAG Context) =====")
+        print(context)
+        print("=================================\n")
+        '''
+    
+if __name__ == "__main__":
+    main()
