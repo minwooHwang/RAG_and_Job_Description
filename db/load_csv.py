@@ -21,13 +21,16 @@ COLUMNS = [
     'education',
     'deadline',
     'location',
-    'location_state' 
+    'location_state',
+    'education_level',
+    'exp_min',
+    'exp_max'
 ]
 
 def main():
     df = pd.read_csv(CSV_PATH)
 
-    df = df.where(pd.notna(df), None)
+    df = df.astype(object).where(pd.notna(df), None)
     '''
     비어있는 값 체크: isna()
     값이 있는지 체크: notna()
@@ -36,7 +39,28 @@ def main():
     # INSERT SQL 문자열 만들기
     cols_sql = ", ".join(COLUMNS)
     placeholders = ", ".join(["%s"] * len(COLUMNS))
-    sql = f"INSERT INTO {TABLE_NAME} ({cols_sql}) VALUES ({placeholders});" # SQL 쿼리 실행문
+    # SQL 쿼리 실행문 / 기존에 있는 경우라면 update만 실행
+    sql = f"""
+    INSERT INTO {TABLE_NAME} ({cols_sql})
+    VALUES ({placeholders})
+    ON CONFLICT (url) DO UPDATE SET
+        title = EXCLUDED.title,
+        company_name = EXCLUDED.company_name,
+        tech_stack = EXCLUDED.tech_stack,
+        work = EXCLUDED.work,
+        qualification = EXCLUDED.qualification,
+        prefer = EXCLUDED.prefer,
+        benefit = EXCLUDED.benefit,
+        process = EXCLUDED.process,
+        work_experience = EXCLUDED.work_experience,
+        education = EXCLUDED.education,
+        deadline = EXCLUDED.deadline,
+        location = EXCLUDED.location,
+        location_state = EXCLUDED.location_state,
+        education_level = EXCLUDED.education_level,
+        exp_min = EXCLUDED.exp_min,
+        exp_max = EXCLUDED.exp_max;
+    """
 
     conn = get_connection()
     try:
