@@ -23,7 +23,7 @@ CREATE TABLE jumpit_jobs(
     education_level INT,
     exp_min INT,
     exp_max INT
-)
+);
 
 /*
 SELECT "출력할 컬럼들"
