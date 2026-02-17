@@ -19,7 +19,10 @@ CREATE TABLE jumpit_jobs(
     education TEXT,
     deadline DATE,
     location TEXT,
-    location_state TEXT
+    location_state TEXT,
+    education_level INT,
+    exp_min INT,
+    exp_max INT
 )
 
 /*
