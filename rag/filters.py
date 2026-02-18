@@ -3,6 +3,24 @@
 import json
 from llm.llm import chat_completion
 
+def normalize_location_state(value: str | None):
+    if not value:
+        return None
+
+    value = value.strip()
+
+    mapping = {
+        "경기도": "경기",
+        "서울특별시": "서울",
+        "인천광역시": "인천",
+        "부산광역시": "부산",
+        "대구광역시": "대구",
+        "대전광역시": "대전",
+        "광주광역시": "광주",
+    }
+
+    return mapping.get(value, value)  # 매핑 없으면 그대로
+
 def extract_filters(question: str) -> dict:
     # 사용자의 질문을 json으로 바꿔주는 함수
     prompt = f"""
@@ -21,7 +39,7 @@ def extract_filters(question: str) -> dict:
     """
 
     messages = [
-        {"role": "system", "content": "너는 채용 조건을 구조화하는 전문가다. JSON만 출력하라."}
+        {"role": "system", "content": "너는 채용 조건을 구조화하는 전문가다. JSON만 출력하라."},
         {"role": "user", "content": prompt}
     ]
 
