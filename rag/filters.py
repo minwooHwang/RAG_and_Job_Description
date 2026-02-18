@@ -51,6 +51,10 @@ def extract_filters(question: str) -> dict:
         # '{"a":1}' -> {"a": 1} (dict)
         # '[1,2,3]' -> [1, 2, 3] (list)
     except Exception:
-        filters = {}
+        return {}
+    
+    filters["location_state"] = normalize_location_state(
+        filters.get("location_state")
+    )
     
     return filters
