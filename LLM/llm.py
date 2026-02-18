@@ -8,6 +8,10 @@ azure 서버에서 openai 모델을 불러올꺼다.
 그리고 나서 azure 서버에서 openai 모델을 불러보자
 ---------
 llm.py는 rag_chat.py가 LLM을 사용할 수 있게 해주는 툴을 담은 파일이다.
+-------
+1. Azure OpenAl Clinent 연결
+2. chat 모델 설정
+3. embedding 모델 설정
 '''
 ###############################
 import os

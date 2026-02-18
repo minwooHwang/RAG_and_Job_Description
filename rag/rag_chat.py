@@ -1,3 +1,12 @@
+'''
+1. 사용자의 질문 입력
+2. 질문 임베딩
+3. Top-k 50개 검색
+4. LLM으로 filters JSON 추출
+5. SQL 필터링
+6. 최종 후보 3 ~ 5개 만들기
+7. LLM 답변 생성 (근거문서 + 후보 공고 정보)
+'''
 # RAG 답변 생성
 from llm.llm import chat_completion, question_embed
 from rag.retriever import retrieve_top_k
