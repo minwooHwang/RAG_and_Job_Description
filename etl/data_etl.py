@@ -130,8 +130,6 @@ def location_state(df, source_col="location", target_col="location_state"):
             return "인천"
         elif "대구" in loc:
             return "대구"
-        elif "광주" in loc:
-            return "광주"
         elif "포항" in loc:
             return "포항"
         else:
