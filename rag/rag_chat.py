@@ -29,9 +29,10 @@ def build_job_context(jobs) -> str:
             f"학력: {j.get('education')} (level={j.get('education_level')})\n"
             f"기술스택: {j.get('tech_stack')}\n"
             f"주요업무: {j.get('work')}\n"
-            f"지원조건: {j.get('qualification')}\n"
+            f"자격요건: {j.get('qualification')}\n"
             f"우대사항: {j.get('prefer')}\n"
             f"복지: {j.get('benefit')}\n"
+            f"채용절차 및 기타 지원 유의사항: {j.get('process')}\n"
             f"유사도: {j.get('distance')}\n"
         )
 
