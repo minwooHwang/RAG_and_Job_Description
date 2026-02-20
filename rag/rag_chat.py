@@ -62,6 +62,18 @@ def answer_with_Hybrid_rag(user_question: str, k_vec: int = 100, final_k: int =5
     # SQL 필터링
     sql_jobs = filter_jobs(filters, limit=100)
     sql_ids = {j["id"] for j in sql_jobs}
+    '''
+    j["id"] for j in sql_jobs -> 리스트 컴프리헨션임
+    반복문 + 조건문 형식
+    - list comprehension
+    [x * 2 for x in nums if x > 0]
+
+    - set comprehension
+    {x["id"] for x in rows}
+    
+    - dict comprehension
+    {x["id"]: x["name"] for x in rows}
+    '''
 
     # 교집합으로 최종 후보 만들기. 없으면 SQL 결과로 대체
     final_ids = vec_ids & sql_ids # & 연산자는 집합의 교집합을 구하는 연산자이다. 즉, 벡터 검색과 SQL 필터링을 모두 통과한 공고의 ID만 남긴다.
